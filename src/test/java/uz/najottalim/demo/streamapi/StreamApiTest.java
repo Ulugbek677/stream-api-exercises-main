@@ -244,7 +244,18 @@ public class StreamApiTest {
                 .stream()
                 .filter(order -> order.getOrderDate().getYear()==2021)
                 .map(order -> order.getCustomer())
+                .collect(Collectors.groupingBy(
+                        (customer -> customer),
+                        Collectors.counting()
+                ))
+                .entrySet()
+                .stream()
+                .sorted((cc1, cc2) -> Long.compare(cc2.getValue(), cc1.getValue()))
+                .peek(entry -> System.out.println(entry))
+                .map(entry -> entry.getKey())
                 .collect(Collectors.toList());
+        Assertions.assertEquals(expected, customers);
+
         // yordam (murakkamroq):
         // birinchi xamma 2021 zakazlarni olish kerak
         // keyin map ochib xar bitta zakaz uchun produktlar
